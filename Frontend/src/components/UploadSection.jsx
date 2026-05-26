@@ -64,7 +64,7 @@ toast.success(
       formData.append("template", template);
 
       const response = await axios.post(
-        "https://docify-backend.onrender.com/api/upload",
+        "https://docify-backend-c8gt.onrender.com",
 
         formData,
 
