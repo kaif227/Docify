@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
+// const uploadRoutes = require("./routes/uploadRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
@@ -14,7 +15,11 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api", uploadRoutes);
+// app.use("/api", uploadRoutes);
+app.use(
+"/api",
+uploadRoutes
+);
 
 app.use(cors({
 origin:"*"
