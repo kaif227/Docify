@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
+  <defs>
+    <!-- Modern Tech Gradients -->
+    <linearGradient id="favExcel" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D26A" />
+      <stop offset="100%" stop-color="#05A651" />
+    </linearGradient>
+    
+    <linearGradient id="favWord" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3A86FF" />
+      <stop offset="100%" stop-color="#1B49B8" />
+    </linearGradient>
+
+    <linearGradient id="favArrow" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+  </defs>
+
+  <!-- Smooth, rounded tech icon base forming a stylized 'D' and document fold -->
+  <!-- Left Side: Represents Data/Excel input -->
+  <path d="M 14 6 C 9.5 6 6 9.5 6 14 L 6 50 C 6 54.5 9.5 58 14 58 L 34 58 C 45 58 54 49 54 38 C 54 29 48 20 40 18 L 40 14 C 40 9.5 36.5 6 32 6 L 14 6 Z" fill="url(#favWord)" />
+  
+  <!-- Ribbon overlay that creates the dynamic 'D' cavity and the Excel accent -->
+  <path d="M 6 42 C 6 52 12 58 22 58 L 34 58 C 45 58 54 49 54 38 C 54 28 46 20 36 18 C 24 16 12 26 6 42 Z" fill="url(#favExcel)" opacity="0.9" />
+
+  <!-- The Negative Space / Inner Cutout of the 'D' -->
+  <path d="M 22 18 L 32 18 C 39 18 44 23 44 30 C 44 37 39 42 32 42 L 22 42 Z" fill="#FFFFFF" />
+
+  <!-- Center Core: The Fast-Forward/Transformation Arrow pointing right -->
+  <path d="M 18 30 C 24 30 28 27 32 22 L 32 28 L 42 28 L 42 32 L 32 32 L 32 38 C 28 33 24 30 18 30 Z" fill="url(#favArrow)" />
+  
+  <!-- Modern Document Top-Right Corner Fold Fold -->
+  <path d="M 32 6 L 40 14 L 32 14 Z" fill="#FFFFFF" opacity="0.4" />
+  <path d="M 40 14 L 32 14 L 32 6 C 36 6 40 10 40 14 Z" fill="#1E3A8A" opacity="0.3" />
+</svg>

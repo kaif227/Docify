@@ -1,0 +1,41 @@
+.featureContainer {
+  padding: 100px;
+
+  color: white;
+
+  text-align: center;
+}
+
+.featureContainer h1 {
+  margin-bottom: 70px;
+
+  font-size: 50px;
+}
+
+.featureGrid {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 40px;
+}
+
+.featureCard {
+  padding: 40px;
+
+  border-radius: 25px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  backdrop-filter: blur(20px);
+
+  transition: 0.5s;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.featureCard:hover {
+  transform: translateY(-10px);
+
+  box-shadow: 0 0 40px #8b5cf6;
+}
