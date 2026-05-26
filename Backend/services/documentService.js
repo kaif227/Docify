@@ -41,14 +41,25 @@ exports.generateDocuments = async (excelPath, templatePath) => {
 
       const description = row.__EMPTY_6 || "";
 
-      // Sub Date
-      const subDate = XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_7);
+      //   // Sub Date
+      //   const subDate = XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_7);
 
-      // Inspection Date
-      const inspectionDate = XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_8);
+      //   // Inspection Date
+      //   const inspectionDate = XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_8);
 
-      // Time
-      const inspectionTime = XLSX.SSF.format("hh:mm AM/PM", row.__EMPTY_9);
+      //   // Time
+      //   const inspectionTime = XLSX.SSF.format("hh:mm AM/PM", row.__EMPTY_9);
+      const subDate = row.__EMPTY_7
+        ? XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_7)
+        : "";
+
+      const inspectionDate = row.__EMPTY_8
+        ? XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_8)
+        : "";
+
+      const inspectionTime = row.__EMPTY_9
+        ? XLSX.SSF.format("hh:mm AM/PM", row.__EMPTY_9)
+        : "";
 
       const villaMatch = description.match(/VILLA\s*NO:\s*([^,]+?\([^)]+\))/i);
 
@@ -103,7 +114,12 @@ exports.generateDocuments = async (excelPath, templatePath) => {
 
     output.on("close", () => resolve());
 
-    archive.on("error", (err) => reject(err));
+    // archive.on("error", (err) => reject(err));
+    archive.on("error", (err) => {
+      console.log("ZIP ERROR:", err);
+
+      reject(err);
+    });
 
     archive.finalize();
   });
