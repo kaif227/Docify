@@ -95,13 +95,21 @@ setTimeout(()=>{
 navigate("/success");
 
 },1000);
-    } catch (error) {
-      toast.error("Generation Failed");
+    } catch(error){
 
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+console.log("FULL ERROR:",error);
+
+console.log(
+"SERVER RESPONSE:",
+error?.response?.data
+);
+
+toast.error(
+error?.response?.data?.message ||
+"Generation Failed"
+);
+
+}
   };
 
   return (
