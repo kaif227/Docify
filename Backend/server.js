@@ -15,7 +15,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", uploadRoutes);
-const cors = require("cors");
 
 app.use(cors({
 origin:"*"
