@@ -6,207 +6,108 @@ const PizZip = require("pizzip");
 const archiver = require("archiver");
 
 exports.generateDocuments = async (excelPath, templatePath) => {
+  const workbook = XLSX.readFile(excelPath);
 
-    const workbook = XLSX.readFile(excelPath);
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-    const sheet =
-    workbook.Sheets[
-        workbook.SheetNames[0]
-    ];
+  const rows = XLSX.utils.sheet_to_json(sheet);
 
-    const rows =
-    XLSX.utils.sheet_to_json(sheet);
+  const jobId = Date.now().toString();
 
-    const jobId =
-    Date.now().toString();
+  const outputFolder = path.join(__dirname, "../generated", jobId);
 
-    const outputFolder =
-    path.join(
-        __dirname,
-        "../generated",
-        jobId
-    );
+  fs.mkdirSync(outputFolder, { recursive: true });
 
-    fs.mkdirSync(
-        outputFolder,
-        {recursive:true}
-    );
+  for (const row of rows) {
+    try {
+      // const content = fs.readFileSync(templatePath, "binary");
 
-    for(const row of rows){
+      // const zip = new PizZip(content);
 
-        const content =
-        fs.readFileSync(
-            templatePath,
-            "binary"
-        );
+      // let documentXml = zip.file("word/document.xml").asText();
+      const content = fs.readFileSync(templatePath, "binary");
 
-        const zip =
-        new PizZip(content);
+      const zip = new PizZip(content);
 
-        let documentXml =
-        zip.file(
-            "word/document.xml"
-        ).asText();
+      const xmlFile = zip.file("word/document.xml");
 
-        // -------------------
-        // Excel values
-        // -------------------
+      if (!xmlFile) {
+        throw new Error("Template document.xml not found");
+      }
 
-        const refNo =
-        row.__EMPTY_3 || "";
+      let documentXml = xmlFile.asText();
 
-        const description =
-        row.__EMPTY_6 || "";
+      const refNo = row.__EMPTY_3 || "";
 
-        // Sub Date
-        const subDate =
-        XLSX.SSF.format(
-            "dd-mmm-yyyy",
-            row.__EMPTY_7
-        );
+      const description = row.__EMPTY_6 || "";
 
-        // Inspection Date
-        const inspectionDate =
-        XLSX.SSF.format(
-            "dd-mmm-yyyy",
-            row.__EMPTY_8
-        );
+      // Sub Date
+      const subDate = XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_7);
 
-        // Time
-        const inspectionTime =
-        XLSX.SSF.format(
-            "hh:mm AM/PM",
-            row.__EMPTY_9
-        );
+      // Inspection Date
+      const inspectionDate = XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_8);
 
-        // -------------------
-        // Extract Building No
-        // Example:
-        // VILLA NO: 5973538 (GCR-V18-E-153)
-        // -------------------
+      // Time
+      const inspectionTime = XLSX.SSF.format("hh:mm AM/PM", row.__EMPTY_9);
 
-        const villaMatch =
-        description.match(
-        /VILLA\s*NO:\s*([^,]+?\([^)]+\))/i
-        );
+      const villaMatch = description.match(/VILLA\s*NO:\s*([^,]+?\([^)]+\))/i);
 
-        const buildingNo =
-        villaMatch
-        ? villaMatch[1].trim()
-        : "";
+      const buildingNo = villaMatch ? villaMatch[1].trim() : "";
 
-        // -------------------
-        // Replace template text
-        // -------------------
+      documentXml = documentXml.replaceAll("REF_NO", refNo);
 
-        documentXml =
-        documentXml.replaceAll(
-            "REF_NO",
-            refNo
-        );
+      documentXml = documentXml.replaceAll("DESCRIPTION_TEXT", description);
 
-        documentXml =
-        documentXml.replaceAll(
-            "DESCRIPTION_TEXT",
-            description
-        );
+      documentXml = documentXml.replaceAll("SUB_DATE", subDate);
 
-        documentXml =
-        documentXml.replaceAll(
-            "SUB_DATE",
-            subDate
-        );
+      documentXml = documentXml.replaceAll("INSPECTION_DATE", inspectionDate);
 
-        documentXml =
-        documentXml.replaceAll(
-            "INSPECTION_DATE",
-            inspectionDate
-        );
+      documentXml = documentXml.replaceAll("INSPECTION_TIME", inspectionTime);
 
-        documentXml =
-        documentXml.replaceAll(
-            "INSPECTION_TIME",
-            inspectionTime
-        );
+      documentXml = documentXml.replaceAll("BUILDING_NO", buildingNo);
 
-        documentXml =
-        documentXml.replaceAll(
-            "BUILDING_NO",
-            buildingNo
-        );
+      zip.file("word/document.xml", documentXml);
 
-        zip.file(
-            "word/document.xml",
-            documentXml
-        );
+      const buffer = zip.generate({
+        type: "nodebuffer",
+      });
 
-        const buffer =
-        zip.generate({
-            type:"nodebuffer"
-        });
+      const fileName = `${refNo}.docx`;
 
-        const fileName =
-        `${refNo}.docx`;
+      fs.writeFileSync(path.join(outputFolder, fileName), buffer);
+    } catch (error) {
+      console.log("ROW ERROR:", error);
 
-        fs.writeFileSync(
-            path.join(
-                outputFolder,
-                fileName
-            ),
-            buffer
-        );
-
+      throw error;
     }
+  }
 
-    // create zip
+  // create zip
 
-    const zipPath =
-    path.join(
-        outputFolder,
-        "documents.zip"
-    );
+  const zipPath = path.join(outputFolder, "documents.zip");
 
-    await new Promise(
-        (resolve,reject)=>{
+  await new Promise((resolve, reject) => {
+    const output = fs.createWriteStream(zipPath);
 
-        const output =
-        fs.createWriteStream(
-            zipPath
-        );
-
-        const archive =
-        archiver(
-            "zip",
-            {
-                zlib:{
-                    level:9
-                }
-            }
-        );
-
-        archive.pipe(output);
-
-        archive.glob(
-            "*.docx",
-            {
-                cwd:outputFolder
-            }
-        );
-
-        output.on(
-            "close",
-            ()=>resolve()
-        );
-
-        archive.on(
-            "error",
-            err=>reject(err)
-        );
-
-        archive.finalize();
-
+    const archive = archiver("zip", {
+      zlib: {
+        level: 9,
+      },
     });
 
-    return zipPath;
+    archive.pipe(output);
 
+    archive.glob("*.docx", {
+      cwd: outputFolder,
+    });
+
+    output.on("close", () => resolve());
+
+    archive.on("error", (err) => reject(err));
+
+    archive.finalize();
+  });
+  console.log("ZIP CREATED:", zipPath);
+
+  return zipPath;
 };
