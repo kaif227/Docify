@@ -220,7 +220,7 @@ tbody td{
   white-space:nowrap;
 }
 .descriptionInput{
-  width:500px;
+  width:250px;
   min-height:70px;
 
   padding:10px;
@@ -234,4 +234,39 @@ tbody td{
   background:#1f2937;
 
   color:white;
+}
+.refNoInput{
+  width:280px;
+  min-width:280px;
+}
+
+.descriptionInput{
+  width:200px;
+  min-width:100px;
+
+  min-height:60px;
+
+  resize:vertical;
+}
+
+th{
+  text-align:left;
+  padding:15px;
+}
+
+td{
+  padding:10px;
+  vertical-align:top;
+}
+
+tbody td:first-child{
+  width:60px;
+}
+
+tbody td:nth-child(2){
+  width:80px;
+}
+
+tbody td:nth-child(3){
+  width:100px;
 }
