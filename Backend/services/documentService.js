@@ -5,12 +5,12 @@ const XLSX = require("xlsx");
 const PizZip = require("pizzip");
 const archiver = require("archiver");
 
-exports.generateDocuments = async (excelPath, templatePath) => {
-  const workbook = XLSX.readFile(excelPath);
+exports.generateDocuments = async (rows, templatePath) => {
+  // const workbook = XLSX.readFile(excelPath);
 
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  // const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-  const rows = XLSX.utils.sheet_to_json(sheet);
+  // const rows = XLSX.utils.sheet_to_json(sheet);
 
   const jobId = Date.now().toString();
 
@@ -36,29 +36,20 @@ exports.generateDocuments = async (excelPath, templatePath) => {
       }
 
       let documentXml = xmlFile.asText();
+      const refNo = row.refNo || "";
 
-      const refNo = row.__EMPTY_3 || "";
+      const description = row.description || "";
 
-      const description = row.__EMPTY_6 || "";
-
-      //   // Sub Date
-      //   const subDate = XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_7);
-
-      //   // Inspection Date
-      //   const inspectionDate = XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_8);
-
-      //   // Time
-      //   const inspectionTime = XLSX.SSF.format("hh:mm AM/PM", row.__EMPTY_9);
-      const subDate = row.__EMPTY_7
-        ? XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_7)
+      const subDate = row.subDate
+        ? XLSX.SSF.format("dd-mmm-yyyy", row.subDate)
         : "";
 
-      const inspectionDate = row.__EMPTY_8
-        ? XLSX.SSF.format("dd-mmm-yyyy", row.__EMPTY_8)
+      const inspectionDate = row.inspectionDate
+        ? XLSX.SSF.format("dd-mmm-yyyy", row.inspectionDate)
         : "";
 
-      const inspectionTime = row.__EMPTY_9
-        ? XLSX.SSF.format("hh:mm AM/PM", row.__EMPTY_9)
+      const inspectionTime = row.inspectionTime
+        ? XLSX.SSF.format("hh:mm AM/PM", row.inspectionTime)
         : "";
 
       const villaMatch = description.match(/VILLA\s*NO:\s*([^,]+?\([^)]+\))/i);
