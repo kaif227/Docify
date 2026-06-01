@@ -65,40 +65,7 @@ function Contact() {
         <p>Have ideas, questions, or collaboration opportunities?</p>
 
         <div className="contactContainer">
-          <div className="contactInfo">
-            <h2>Contact Information</h2>
-
-            <div className="infoCard">
-              <FaEnvelope />
-
-              <a href="mailto:kaifbhati58@gmail.com">kaifbhati58@gmail.com</a>
-            </div>
-
-            <div className="infoCard">
-              <FaLinkedin />
-
-              <a
-                href="https://www.linkedin.com/in/mohammedkaif02/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                LinkedIn
-              </a>
-            </div>
-
-            <div className="infoCard">
-              <FaGithub />
-
-              <a
-                href="https://github.com/kaif227"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Github
-              </a>
-            </div>
-          </div>
-
+          
           <form className="contactForm" onSubmit={sendEmail}>
             <input
               type="text"
