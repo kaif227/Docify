@@ -106,10 +106,7 @@ function UploadSection() {
   const handleGenerate = async () => {
     if (!excel || !template) {
       toast.error("Upload both files");
-      // console.log("ROWS BEING SENT:", rows);
-      // console.log("EXCEL STATE:", excel);
-      // console.log("TEMPLATE STATE:", template);
-      // console.log("ROWS:", rows.length);
+     
 
       return;
     }
@@ -122,18 +119,8 @@ function UploadSection() {
 
       formData.append("rows", JSON.stringify(rows));
 
-      // console.log("EXCEL STATE:", excel);
-
-      // console.log("TEMPLATE STATE:", template);
-
-      // console.log("ROWS LENGTH:", rows.length);
-
-      // formData.forEach((value, key) => {
-      //   console.log(key, value);
-      // });
-
-      const response = await axios.post(
-        "https://docify-backend-c8gt.onrender.com/api/upload", //"http://localhost:5000/api/upload",
+           const response = await axios.post(
+         "https://docify-backend-c8gt.onrender.com/api/upload",// "http://localhost:5000/api/upload",
         formData,
 
         {

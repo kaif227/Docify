@@ -4,6 +4,14 @@ const path = require("path");
 const XLSX = require("xlsx");
 const PizZip = require("pizzip");
 const archiver = require("archiver");
+function escapeXml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
 
 exports.generateDocuments = async (rows, templatePath) => {
   // const workbook = XLSX.readFile(excelPath);
@@ -20,13 +28,7 @@ exports.generateDocuments = async (rows, templatePath) => {
 
   for (const row of rows) {
     try {
-      // const content = fs.readFileSync(templatePath, "binary");
-
-      // const zip = new PizZip(content);
-
-      // let documentXml = zip.file("word/document.xml").asText();
       const content = fs.readFileSync(templatePath, "binary");
-
       const zip = new PizZip(content);
 
       const xmlFile = zip.file("word/document.xml");
@@ -34,11 +36,13 @@ exports.generateDocuments = async (rows, templatePath) => {
       if (!xmlFile) {
         throw new Error("Template document.xml not found");
       }
-
+      // console.log("PROCESSING:", row.refNo);
+      
       let documentXml = xmlFile.asText();
-      const refNo = row.refNo || "";
-
-      const description = row.description || "";
+      const refNo = escapeXml(row.refNo || "");
+      const description = escapeXml(
+        (row.description || "").replace(/\r?\n/g, " "),
+      );
 
       const subDate = row.subDate
         ? XLSX.SSF.format("dd-mmm-yyyy", row.subDate)
@@ -74,9 +78,21 @@ exports.generateDocuments = async (rows, templatePath) => {
         type: "nodebuffer",
       });
 
-      const fileName = `${refNo}.docx`;
+      // const fileName = `${refNo}.docx`;
+      const safeRefNo = refNo.replace(/[\\/:*?"<>|]/g, "_");
+
+      const fileName = `${safeRefNo}.docx`;
+      // console.log("CREATING FILE:", fileName);
 
       fs.writeFileSync(path.join(outputFolder, fileName), buffer);
+//       console.log(
+//   "WRITING:",
+//   fileName
+// );
+// console.log(
+//   "SUCCESS:",
+//   fileName
+// );
     } catch (error) {
       console.log("ROW ERROR:", error);
 
@@ -114,7 +130,9 @@ exports.generateDocuments = async (rows, templatePath) => {
 
     archive.finalize();
   });
-  console.log("ZIP CREATED:", zipPath);
+  // console.log("ZIP CREATED:", zipPath);
 
   return zipPath;
 };
+
+  
