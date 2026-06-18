@@ -17,6 +17,7 @@ function UploadSection() {
   const [excel, setExcel] = useState(null);
   const [template, setTemplate] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const [activeCell, setActiveCell] = useState(null);
   const [rows, setRows] = useState([]);
@@ -106,21 +107,30 @@ function UploadSection() {
   const handleGenerate = async () => {
     if (!excel || !template) {
       toast.error("Upload both files");
-     
 
       return;
     }
 
     try {
       setLoading(true);
+      setProgress(0);
+      let current = 0;
+
+      const interval = setInterval(() => {
+        current += 5;
+
+        if (current <= 90) {
+          setProgress(current);
+        }
+      }, 300);
       const formData = new FormData();
 
       formData.append("template", template);
 
       formData.append("rows", JSON.stringify(rows));
 
-           const response = await axios.post(
-         "https://docify-backend-c8gt.onrender.com/api/upload",// "http://localhost:5000/api/upload",
+      const response = await axios.post(
+        "http://localhost:5000/api/upload", // "https://docify-backend-c8gt.onrender.com/api/upload",
         formData,
 
         {
@@ -138,6 +148,9 @@ function UploadSection() {
 
       document.body.appendChild(link);
       link.click();
+      clearInterval(interval);
+
+      setProgress(100);
 
       toast.success("Documents Generated");
 
@@ -145,6 +158,9 @@ function UploadSection() {
         navigate("/success");
       }, 1000);
     } catch (error) {
+      clearInterval(interval);
+
+      setProgress(0);
       console.log("FULL ERROR:", error);
 
       if (error.response?.data instanceof Blob) {
@@ -247,10 +263,39 @@ function UploadSection() {
         </div>
 
         <div className="buttonSection">
-          <button onClick={handleGenerate} className="generateBtn">
-            {loading ? "Generating..." : "Generate Documents"}
-          </button>
-        </div>
+
+  <button
+    onClick={handleGenerate}
+    className="generateBtn"
+    disabled={loading}
+  >
+    {loading
+      ? `Generating ${progress}%`
+      : "Generate Documents"}
+  </button>
+
+  {loading && (
+    <div className="progressWrapper">
+
+      <div className="progressBar">
+        <div
+          className="progressFill"
+          style={{
+            width: `${progress}%`,
+          }}
+        />
+      </div>
+
+      <div className="progressText">
+        {progress === 0
+          ? "Preparing documents..."
+          : `${progress}% Complete`}
+      </div>
+
+    </div>
+  )}
+
+</div>
       </div>
     </div>
   );

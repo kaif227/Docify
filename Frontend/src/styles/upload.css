@@ -270,3 +270,20 @@ tbody td:nth-child(2){
 tbody td:nth-child(3){
   width:100px;
 }
+.buttonSection{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:15px;
+}
+
+.progressWrapper{
+  width:400px;
+}
+
+.progressText{
+  color:white;
+  text-align:center;
+  margin-top:8px;
+  font-size:14px;
+}
