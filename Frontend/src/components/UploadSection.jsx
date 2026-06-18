@@ -130,7 +130,7 @@ function UploadSection() {
       formData.append("rows", JSON.stringify(rows));
 
       const response = await axios.post(
-        "http://localhost:5000/api/upload", // "https://docify-backend-c8gt.onrender.com/api/upload",
+       "https://docify-backend-c8gt.onrender.com/api/upload", //"http://localhost:5000/api/upload", 
         formData,
 
         {
